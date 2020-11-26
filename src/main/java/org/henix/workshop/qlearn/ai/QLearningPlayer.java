@@ -28,14 +28,26 @@ public class QLearningPlayer implements Player {
         this.competitive = competitive;
     }
 
+    @Override
+    public String toString(){
+        return "Qlearning AI "+getToken();
+    }
+
 
     @Override
     public Token getToken() {
-        return null;
+        return token;
     }
 
     @Override
     public Move nextMove(CellState[][] gridState, Collection<Move> availableMoves) {
-        return null;
+
+        // ???
+        return availableMoves.iterator().next();
+
+    }
+
+    public void train(/* I'm sure I need parameters here */){
+        // ????
     }
 }
