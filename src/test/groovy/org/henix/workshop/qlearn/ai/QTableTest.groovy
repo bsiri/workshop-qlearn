@@ -2,6 +2,7 @@ package org.henix.workshop.qlearn.ai
 
 import org.henix.workshop.qlearn.concepts.Move
 import org.henix.workshop.qlearn.concepts.Token
+import org.henix.workshop.qlearn.impl.HumanPlayer
 import spock.lang.Specification
 import static org.henix.workshop.qlearn.MockHelper.*
 import static org.henix.workshop.qlearn.ai.QTable.*
@@ -28,6 +29,30 @@ class QTableTest extends Specification {
 
         then:
         qtable.getValueFor(state, move) == 0.5f
+    }
+
+    def "should find the best move for player X"(){
+        given:
+        def grid = grid("""
+            X.O
+            X..
+            O..
+        """)
+        def allMoves = grid.getAvailableMoveFor(new HumanPlayer(Token.X))
+        def expectedBest = allMoves[3]
+
+        and:
+        def qtable = new QTable()
+        allMoves.each {qtable.assignValueFor(grid.state, it, 0.0f)}
+        qtable.assignValueFor(grid.state, expectedBest, 1.0f)
+
+        when:
+        def actualBest = qtable.findBestMove(grid.state, allMoves);
+
+        then:
+        expectedBest == actualBest
+
+
     }
 
 
