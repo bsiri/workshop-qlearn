@@ -8,7 +8,7 @@ import org.henix.workshop.qlearn.concepts.Player
 import org.henix.workshop.qlearn.concepts.Token
 import spock.lang.Specification
 import static org.henix.workshop.qlearn.concepts.CellState.*
-
+import static org.henix.workshop.qlearn.MockHelper.*
 
 class MatrixGridTest extends Specification{
 
@@ -193,33 +193,4 @@ class MatrixGridTest extends Specification{
     }
 
 
-
-
-    // ************ scaffolding *********************
-
-    def grid(template){
-        def lines = template.split('\n')
-                            .collect { it.trim() }
-                            .findAll { it != "" }
-
-        def cellstates= []
-        lines.eachWithIndex { line, idx ->
-            def tokens = line.split('')
-            cellstates[idx] = tokens.collect{ state(it) }
-        }
-
-        return new MatrixGrid(cellstates as CellState[][])
-    }
-
-    def state(token){
-        switch(token){
-            case "X": return CellState.X
-            case "O": return CellState.O
-            case ".": return CellState.EMPTY
-        }
-    }
-
-    def move(x,y,token){
-        new Move(x,y,token)
-    }
 }
