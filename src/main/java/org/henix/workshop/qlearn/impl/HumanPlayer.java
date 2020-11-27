@@ -6,6 +6,7 @@ import org.henix.workshop.qlearn.concepts.Player;
 import org.henix.workshop.qlearn.concepts.Token;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +28,7 @@ public class HumanPlayer implements Player {
     }
 
     @Override
-    public Move nextMove(CellState[][] gridState, Collection<Move> availableMoves) {
+    public Move nextMove(CellState[][] gridState, List<Move> availableMoves) {
         Scanner scanner = new Scanner(System.in);
         Move move = null;
 

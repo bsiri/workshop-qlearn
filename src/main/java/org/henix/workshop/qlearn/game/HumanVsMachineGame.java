@@ -8,10 +8,17 @@ import org.henix.workshop.qlearn.impl.StupidAI;
 import java.util.concurrent.ThreadLocalRandom;
 import static org.henix.workshop.qlearn.tools.StaticFunctions.*;
 
-public class HumanVsMachineGameController implements GameController {
+public class HumanVsMachineGame implements GameController {
 
     private Player human = new HumanPlayer(Token.X);
     private Player machine = new StupidAI(Token.O);
+
+    public HumanVsMachineGame() {    }
+
+    public HumanVsMachineGame(Player human, Player machine) {
+        this.human = human;
+        this.machine = machine;
+    }
 
     private Player currentPlayer;
 

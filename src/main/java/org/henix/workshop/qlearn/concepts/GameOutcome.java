@@ -21,4 +21,8 @@ public enum GameOutcome {
             return "Hey, not done yet !";
         }
     };
+
+    public boolean isGameOver(){
+        return (this != NOT_OVER_YET);
+    }
 }

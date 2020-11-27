@@ -73,11 +73,7 @@ public class MatrixGrid implements Grid {
 
     @Override
     public boolean isGameOver() {
-        CellState winnertoken= searchWinner();
-        if (winnertoken != null)
-            return true;
-        else
-            return (_movecount >= MAX_MOVE_CNT);
+        return getOutcome().isGameOver();
     }
 
     @Override

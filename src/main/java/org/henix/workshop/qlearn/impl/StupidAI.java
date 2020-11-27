@@ -5,7 +5,6 @@ import org.henix.workshop.qlearn.concepts.Move;
 import org.henix.workshop.qlearn.concepts.Player;
 import org.henix.workshop.qlearn.concepts.Token;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -26,7 +25,7 @@ public class StupidAI implements Player {
     }
 
     @Override
-    public Move nextMove(CellState[][] gridState, Collection<Move> availableMove) {
+    public Move nextMove(CellState[][] gridState, List<Move> availableMove) {
         int moveIdx = random.nextInt(availableMove.size());
         Iterator<Move> iter = availableMove.iterator();
         while(moveIdx-- > 0) iter.next();

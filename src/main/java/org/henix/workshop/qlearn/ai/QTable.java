@@ -17,7 +17,7 @@ public class QTable {
 
     public Float getValueFor(CellState[][] gridState, Move playerMove){
         StateAction sa = StateAction.from(gridState, playerMove);
-        return valueByStateAction.get(sa);
+        return valueByStateAction.getOrDefault(sa, 0.0f);
     }
 
     public Move findBestMove(CellState[][] gridState, List<Move> allMoves){
@@ -30,13 +30,18 @@ public class QTable {
         Move best = firstMove;
         for (Move m : allMoves){
             StateAction sa = new StateAction(state, m.x*Grid.SIZE_Y+m.y);
-            Float mValue = valueByStateAction.get(sa);
+            Float mValue = valueByStateAction.getOrDefault(sa, 0.0f);
             if (mValue > max){
                 max = mValue;
                 best = m;
             }
         }
         return best;
+    }
+
+    public Float findBestValue(CellState[][] gridState, List<Move> allMoves){
+        Move best = findBestMove(gridState, allMoves);
+        return valueByStateAction.getOrDefault(StateAction.from(gridState, best), 0.0f);
     }
 
     public void assignValueFor(CellState[][] gridState, Move playerMove, Float value){
