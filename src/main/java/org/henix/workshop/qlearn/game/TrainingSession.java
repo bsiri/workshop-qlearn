@@ -2,12 +2,11 @@ package org.henix.workshop.qlearn.game;
 
 import org.henix.workshop.qlearn.ai.QLearningPlayer;
 import org.henix.workshop.qlearn.ai.QLearningPlayerBuilder;
-import org.henix.workshop.qlearn.concepts.Grid;
-import org.henix.workshop.qlearn.concepts.Move;
-import org.henix.workshop.qlearn.concepts.Player;
-import org.henix.workshop.qlearn.concepts.Token;
+import org.henix.workshop.qlearn.concepts.*;
 import org.henix.workshop.qlearn.impl.MatrixGrid;
+import static org.henix.workshop.qlearn.tools.StaticFunctions.*;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.henix.workshop.qlearn.tools.StaticFunctions.print;
@@ -17,22 +16,20 @@ public class TrainingSession {
     public static final float WIN_REWARD = 1.0f;
     public static final float LOSS_REWARD = -2.0f;
     public static final float NO_REWARD = 0.0f;
-    public static final float GREEDINESS = 0.5f;    // greed is good... or is it ?
+    public static final float GREEDINESS = 0.1f;
 
 
-    // ?? Ten, really ?
-    public static final int MAX_TRAINING_ROUNDS = 10;
+    public static final int MAX_TRAINING_ROUNDS = 150000;
 
     int round = 0;
 
     QLearningPlayer playerX;
     QLearningPlayer playerO;
 
-    Player currentPlayer;
+    QLearningPlayer currentPlayer;
 
     public void run(){
 
-        initPlayers();
 
         while(round < MAX_TRAINING_ROUNDS){
             initPlayers();
@@ -47,6 +44,8 @@ public class TrainingSession {
             }
         }
 
+        print("\nI know Kung-Fu.\n");
+
     }
 
 
@@ -56,26 +55,43 @@ public class TrainingSession {
         Grid grid = new MatrixGrid();
 
         flipCoin();
-        
-        while(! grid.isGameOver()){
 
-            Move move = currentPlayer.nextMove(grid.getState(), grid.getAvailableMoveFor(currentPlayer));
+        GameOutcome outcome = GameOutcome.NOT_OVER_YET;
+        while(! outcome.isGameOver()){
+
+            CellState[][] gridState = grid.getState();
+            List<Move> moves = grid.getAvailableMoveFor(currentPlayer);
+
+            currentPlayer.train(gridState, moves, NO_REWARD, false);
+
+            Move move = currentPlayer.nextMove(gridState, moves);
             grid.play(move);
 
-            /*
-                Hmmm, those AI are supposed to train about here.
-                Is the game over ?
-                - Is there a winner ?
-                - Which one gets which reward ?
-                Or maybe the game is not over yet ?
-                - Is there a reward at all then ?
-             */
+            outcome = grid.getOutcome();
 
             nextTurn();
         }
 
+        finalTrain(grid, outcome);
+
     }
 
+
+    private void finalTrain(Grid grid, GameOutcome outcome){
+
+        CellState[][] cellStates = grid.getState();
+
+        Float x_reward;
+        Float o_reward;
+        switch(outcome){
+            case DRAW: x_reward = NO_REWARD; o_reward = NO_REWARD; break;
+            case PLAYER_X_WINS: x_reward = WIN_REWARD; o_reward = LOSS_REWARD; break;
+            case PLAYER_O_WINS: x_reward = LOSS_REWARD; o_reward = WIN_REWARD; break;
+            default: throw new IllegalStateException("How did we get there, the game is not over yet !");
+        }
+        playerX.train(cellStates, grid.getAvailableMoveFor(playerX), x_reward, true);
+        playerO.train(cellStates, grid.getAvailableMoveFor(playerO), o_reward, true);
+    }
 
 
     private void initPlayers(){
